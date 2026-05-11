@@ -3,13 +3,21 @@
 import React from "react";
 import { Alert } from "@/types";
 import { motion, AnimatePresence } from "framer-motion";
-import { AlertTriangle, Clock, MapPin, Send } from "lucide-react";
+import { AlertTriangle, Clock, MapPin, Send, Check } from "lucide-react";
+import { apiService } from "@/services/api";
 
 interface AlertFeedProps {
   alerts: Alert[];
 }
 
 export const AlertFeed = ({ alerts }: AlertFeedProps) => {
+  const handleResolve = async (id: number) => {
+    try {
+      await apiService.resolveAlert(id);
+    } catch (error) {
+      console.error("Failed to resolve alert:", error);
+    }
+  };
   return (
     <div className="glass-card flex flex-col h-full">
       <div className="p-4 border-b border-white/10 flex justify-between items-center">
@@ -63,11 +71,21 @@ export const AlertFeed = ({ alerts }: AlertFeedProps) => {
                     <Send className="w-3 h-3 text-cyan-400" />
                     <span className="text-slate-300">SMS DISPATCHED</span>
                   </div>
-                  <span className={`text-[9px] font-black uppercase tracking-tighter px-2 py-0.5 rounded ${
-                    alert.risk_level === "CRITICAL" ? "bg-red-500 text-white" : "bg-orange-500 text-white"
-                  }`}>
-                    {alert.risk_level}
-                  </span>
+                  
+                  <div className="flex items-center gap-2">
+                    <button 
+                      onClick={() => handleResolve(alert.id)}
+                      className="text-[9px] font-bold uppercase tracking-widest px-2 py-1 rounded bg-white/5 hover:bg-emerald-500/20 hover:text-emerald-400 border border-white/10 transition-all flex items-center gap-1"
+                    >
+                      <Check className="w-2.5 h-2.5" />
+                      Resolve
+                    </button>
+                    <span className={`text-[9px] font-black uppercase tracking-tighter px-2 py-0.5 rounded ${
+                      alert.risk_level === "CRITICAL" ? "bg-red-500 text-white" : "bg-orange-500 text-white"
+                    }`}>
+                      {alert.risk_level}
+                    </span>
+                  </div>
                 </div>
               </motion.div>
             ))

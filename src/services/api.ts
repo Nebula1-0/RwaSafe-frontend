@@ -16,4 +16,5 @@ export const apiService = {
   getSectorHistory: (id: number) => api.get<EnvironmentalData[]>(`/history/${id}`).then((r) => r.data),
   getDashboardStats: () => api.get<DashboardStats>("/dashboard/stats").then((r) => r.data),
   getSystemHealth: () => api.get<SystemHealth>("/system/health").then((r) => r.data),
+  resolveAlert: (id: number) => api.post(`/alerts/${id}/resolve`).then((r) => r.data),
 };
